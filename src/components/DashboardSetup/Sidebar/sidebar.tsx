@@ -6,16 +6,23 @@ import {
     ListSubheader,
     Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import assets from "@/assets";
 import Image from "next/image";
 import Link from "next/link";
 import { drawerItems } from "@/utils/drawerItems";
 import { UserRole } from "@/types";
 import SidebarItem from "./SidebarItems";
+import { getUserInfo } from "@/services/auth.services";
 
 const Sidebar = () => {
-    const items = drawerItems("admin" as UserRole);
+    const [userRole, setUserRole] = useState("");
+    useEffect(() => {
+        const { role } = getUserInfo() as any;
+        setUserRole(role);
+    }, []);
+
+    const items = drawerItems(userRole as UserRole);
 
     return (
         <Box
@@ -26,6 +33,7 @@ const Sidebar = () => {
                 borderRight: "1px solid #e0e0e0",
                 display: "flex",
                 flexDirection: "column",
+                overflow: "hidden",
             }}
         >
             {/* Logo Area */}
@@ -65,11 +73,6 @@ const Sidebar = () => {
                     <SidebarItem key={index} item={item} />
                 ))}
             </List>
-
-            {/* Optional Footer or Version */}
-            <Box sx={{ mt: "auto", p: 2, textAlign: "center", fontSize: "0.75rem", color: "gray" }}>
-                © 2025 HealthCare
-            </Box>
         </Box>
     );
 };
